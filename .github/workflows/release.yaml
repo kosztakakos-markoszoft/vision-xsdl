@@ -1,0 +1,38 @@
+name: Build and Upload VSIX Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repozitórium lekérése
+        uses: actions/checkout@v4
+
+      - name: Node.js beállítása
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Függőségek telepítése
+        run: npm ci
+
+      - name: TypeScript fordítás
+        run: npx tsc
+
+      - name: VSIX csomag előállítása
+        run: npx @vscode/vsce package --no-dependencies -o vision-xsdl.vsix
+
+      - name: VSIX feltöltése a GitHub Release-hez
+        uses: softprops/action-gh-release@v2
+        with:
+          files: vision-xsdl.vsix
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
