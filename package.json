@@ -1,0 +1,52 @@
+{
+  "name": "vision-xsdl",
+  "displayName": "Vision XSDL",
+  "description": "XSDL language support for Vision X10",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.136.0"
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:xsdl"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "xsdl",
+        "aliases": [
+          "XSDL",
+          "xsdl"
+        ],
+        "extensions": [
+          ".xsdl",
+          ".val"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "xsdl",
+        "scopeName": "source.xsdl",
+        "path": "./syntaxes/xsdl.tmLanguage.json"
+      }
+    ]
+  },
+  "dependencies": {
+    "@types/vscode": "^1.136.0",
+    "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "eslint": "^10.10.0"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "XSDL",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#keywords" },
+    { "include": "#blocks" },
+    { "include": "#types" },
+    { "include": "#variable_declarations" },
+    { "include": "#numbers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.apostrophe.xsdl",
+          "match": "'.*$"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.xsdl",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.xsdl",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.xsdl",
+          "match": "(?i)\\b(if|then|else|while|do|for|to|downto|repeat|until|case|of|function|Procedure|var|const|type|struct|object|class|property|begin|end|static|publics)\\b"
+        },
+        {
+          "name": "keyword.operator.xsdl",
+          "match": "(?i)\\b(and|or|not|mod|div|inc|dec)\\b"
+        },
+        {
+          "name": "support.class.xsdl",
+          "match": "(?i)\\b(Discretes|Reals|DirectWords|Morestates|Discretetrends|Realtrends|Morestatetrends)\\b"
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "name": "keyword.control.block.xsdl",
+          "match": "(?i)\\b(BEGIN|END|DO|STATIC|FI)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.xsdl",
+          "match": "(?i)\\b(Integer|String|Real|Boolean|Float|Word|Byte|Array|ushort|shortstring|bool|dword|double|namestring|XNumerics|XDigits)\\b"
+        },
+        {
+          "name": "support.type.xsdl",
+          "match": "(?i)\\b(Image|Driver|Node|TcpSocket|UdpSocket|Input|Output|Communication)\\b"
+        }
+      ]
+    },
+    "variable_declarations": {
+      "patterns": [
+        {
+          "match": "^\\s*([a-zA-Z0-9_\\.]+)\\s*:",
+          "captures": {
+            "1": {
+              "name": "variable.other.xsdl"
+            }
+          }
+        },
+        {
+          "match": "#(fun|pub|lib)\\s+([a-zA-Z0-9_]+)",
+          "captures": {
+            "1": { "name": "keyword.control.directive.xsdl" },
+            "2": { "name": "entity.name.namespace.xsdl" }
+          }
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.xsdl",
+          "match": "\\b[0-9]+\\b"
+        },
+        {
+          "name": "constant.numeric.hex.xsdl",
+          "match": "\\$[0-9A-Fa-f]+\\b"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.xsdl"
+}
