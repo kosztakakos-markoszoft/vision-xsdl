@@ -4,11 +4,16 @@
   "patterns": [
     { "include": "#comments" },
     { "include": "#strings" },
+    { "include": "#attributes" },
     { "include": "#keywords" },
     { "include": "#blocks" },
     { "include": "#types" },
+    { "include": "#booleans" },
+    { "include": "#special_constants" },
+    { "include": "#at_references" },
     { "include": "#variable_declarations" },
-    { "include": "#numbers" }
+    { "include": "#numbers" },
+    { "include": "#identifiers" }
   ],
   "repository": {
     "comments": {
@@ -30,11 +35,23 @@
         }
       ]
     },
+    "attributes": {
+      "patterns": [
+        {
+          "match": "\\b([a-zA-Z0-9_]+)\\s*=",
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.xsdl"
+            }
+          }
+        }
+      ]
+    },
     "keywords": {
       "patterns": [
         {
           "name": "keyword.control.xsdl",
-          "match": "(?i)\\b(if|then|else|while|do|for|to|downto|repeat|until|case|of|function|Procedure|var|const|type|struct|object|class|property|begin|end|static|publics)\\b"
+          "match": "(?i)\\b(if|then|else|while|do|for|to|downto|repeat|until|case|of|function|Procedure|type|object|property|begin|end|static)\\b"
         },
         {
           "name": "keyword.operator.xsdl",
@@ -42,7 +59,7 @@
         },
         {
           "name": "support.class.xsdl",
-          "match": "(?i)\\b(Discretes|Reals|DirectWords|Morestates|Discretetrends|Realtrends|Morestatetrends)\\b"
+          "match": "(?i)\\b(Constants|Discretes|Reals|DirectWords|Morestates|Discretetrends|Realtrends|Morestatetrends)\\b"
         }
       ]
     },
@@ -50,7 +67,7 @@
       "patterns": [
         {
           "name": "keyword.control.block.xsdl",
-          "match": "(?i)\\b(BEGIN|END|DO|STATIC|FI)\\b"
+          "match": "(?i)\\b(BEGIN|END|DO|STATIC)\\b"
         }
       ]
     },
@@ -66,13 +83,37 @@
         }
       ]
     },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.xsdl",
+          "match": "(?i)\\b(true|false)\\b"
+        }
+      ]
+    },
+    "special_constants": {
+      "patterns": [
+        {
+          "name": "support.constant.xsdl",
+          "match": "(?i)\\b(DNONE|WNONE)\\b"
+        }
+      ]
+    },
+    "at_references": {
+      "patterns": [
+        {
+          "name": "variable.parameter.reference.xsdl",
+          "match": "@[a-zA-Z0-9_]+"
+        }
+      ]
+    },
     "variable_declarations": {
       "patterns": [
         {
           "match": "^\\s*([a-zA-Z0-9_\\.]+)\\s*:",
           "captures": {
             "1": {
-              "name": "variable.other.xsdl"
+              "name": "variable.name.declaration.xsdl"
             }
           }
         },
@@ -89,11 +130,29 @@
       "patterns": [
         {
           "name": "constant.numeric.xsdl",
-          "match": "\\b[0-9]+\\b"
+          "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
         },
         {
           "name": "constant.numeric.hex.xsdl",
           "match": "\\$[0-9A-Fa-f]+\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "entity.name.function.xsdl" }
+          }
+        },
+        {
+          "name": "variable.other.object.xsdl",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+\\b"
+        },
+        {
+          "name": "variable.other.xsdl",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
         }
       ]
     }
