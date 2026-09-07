@@ -1,0 +1,37 @@
+{
+  "If-Then-Else-Fi blokk": {
+    "prefix": "if",
+    "body": [
+      "if ${1:feltetel} then",
+      "\t${2:// kod}",
+      "else",
+      "\t${3:// kod}",
+      "fi;"
+    ],
+    "description": "XSDL feltételes utasítás sablon"
+  },
+  "Input kommunikációs blokk": {
+    "prefix": "input",
+    "body": [
+      "${1:I_PLC01_1}:Input ${2:1}",
+      "BEGIN",
+      "\tDataType=      \"${3:3(RR)}\"",
+      "\tDataAddress=   \"${4:0141}\"",
+      "\tSemaphore=     ${5:GyortVM.PLC01_adat_vetel1}",
+      "\tNodeRef=       @${6:PLC01}",
+      "\tData=          ${7:GyortVm.AI}",
+      "END"
+    ],
+    "description": "XSDL Input adatvétel blokk sablon"
+  },
+  "Procedure deklaráció": {
+    "prefix": "proc",
+    "body": [
+      "${1:EljarasNeve}::Procedure (${2:param1}: ${3:ushort})",
+      "begin",
+      "\t$0",
+      "end"
+    ],
+    "description": "XSDL Procedúra sablon"
+  }
+}

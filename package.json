@@ -2,7 +2,7 @@
   "name": "vision-xsdl",
   "displayName": "Vision XSDL",
   "description": "XSDL language support for Vision X10",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.136.0"
   },
@@ -38,6 +38,12 @@
         "language": "xsdl",
         "scopeName": "source.xsdl",
         "path": "./syntaxes/xsdl.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "xsdl",
+        "path": "./snippets/snippets.json"
       }
     ]
   },
