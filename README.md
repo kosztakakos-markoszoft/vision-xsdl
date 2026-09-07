@@ -19,7 +19,7 @@ Ez a Visual Studio Code bővítmény teljes körű szintaxis színezést és Int
 ## Támogatott fájlkiterjesztések
 
 * `.xsdl`
-  * `.val`
+* `.val`
 
 ## Használat
 

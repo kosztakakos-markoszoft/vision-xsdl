@@ -2,18 +2,39 @@
   "name": "vision-xsdl",
   "displayName": "Vision XSDL",
   "description": "XSDL language support for Vision X10",
-  "version": "0.0.3",
+  "publisher": "kosztak",
+  "icon": "icon.png",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.136.0"
   },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "xsdl",
+    "vision x",
+    "scada",
+    "plc"
+  ],
+  "author": {
+    "name": "Koszták Ákos",
+    "email": "kosztak.akos@markoszoft.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kosztakakos-markoszoft/vision-xsdl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kosztakakos-markoszoft/vision-xsdl/issues"
+  },
+  "homepage": "https://github.com/kosztakakos-markoszoft/vision-xsdl#readme",
+  "license": "MIT",
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
-  "categories": [
-    "Programming Languages"
-  ],
   "activationEvents": [
     "onLanguage:xsdl"
   ],
