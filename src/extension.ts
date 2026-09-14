@@ -83,10 +83,14 @@ export function activate(context: vscode.ExtensionContext) {
 
             // Alap kulcsszavak felajánlása
             const keywords = [
-                'BEGIN', 'END', 'DO', 'STATIC', 'FI',
+                'BEGIN', 'END', 'DO', 'STATIC',
                 'if', 'then', 'else', 'while', 'for', 'to', 'downto', 'repeat', 'until', 'function', 'Procedure',
                 'ushort', 'shortstring', 'bool', 'integer', 'real', 'dword', 'double', 'word',
-                'Discretes', 'Reals', 'DirectWords', 'Morestates', 'Discretetrends', 'Realtrends', 'Morestatetrends'
+                'Constants', 'Shortints', 'Bytes', 'Integers', 'Words', 'Longints', 'DWords', 'DLongs', 'ScaledReals',
+                'S5Times', 'BCDs', 'ShortintTrends', 'ByteTrends', 'IntegerTrends', 'WordTrends', 'LongintTrends', 'DWordTrends',
+                'DLongTrends', 'ScaledRealTrends', 'BCDTrends', 'DirectShortints', 'DirectBytes', 'DirectIntegers', 'DirectWords',
+                'DirectLongints', 'DirectDWords', 'DirectDLongs', 'BCDWords', 'Reals', 'Doubles', 'RealTrends', 'DoubleTrends',
+                'Discretes', 'Morestates', 'Messages', 'WideStrings', 'LongStrings', 'PackTimes', 'LongTimes', 'IODevices'
             ];
             
             keywords.forEach(kw => {

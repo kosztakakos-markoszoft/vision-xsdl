@@ -51,7 +51,7 @@
       "patterns": [
         {
           "name": "keyword.control.xsdl",
-          "match": "(?i)\\b(if|then|else|while|do|for|to|downto|repeat|until|case|of|function|Procedure|type|object|property|begin|end|static)\\b"
+          "match": "(?i)\\b(if|then|else|while|do|for|to|downto|repeat|until|case|of|function|Procedure|type|object|property)\\b"
         },
         {
           "name": "keyword.operator.xsdl",
@@ -59,7 +59,7 @@
         },
         {
           "name": "support.class.xsdl",
-          "match": "(?i)\\b(Constants|Discretes|Reals|DirectWords|Morestates|Discretetrends|Realtrends|Morestatetrends)\\b"
+          "match": "(?i)\\b(Constants|Shortints|Bytes|Integers|Words|Longints|DWords|DLongs|ScaledReals|S5Times|BCDs|ShortintTrends|ByteTrends|IntegerTrends|WordTrends|LongintTrends|DWordTrends|DLongTrends|ScaledRealTrends|BCDTrends|DirectShortints|DirectBytes|DirectIntegers|DirectWords|DirectLongints|DirectDWords|DirectDLongs|BCDWords|Reals|Doubles|RealTrends|DoubleTrends|Discretes|Morestates|Messages|WideStrings|LongStrings|PackTimes|LongTimes|IODevices)\\b"
         }
       ]
     },
@@ -75,7 +75,7 @@
       "patterns": [
         {
           "name": "entity.name.type.xsdl",
-          "match": "(?i)\\b(Integer|String|Real|Boolean|Float|Word|Byte|Array|ushort|shortstring|bool|dword|double|namestring|XNumerics|XDigits)\\b"
+          "match": "(?i)\\b(ushort|shortstring|bool|dword|double|namestring|XNumerics|XDigits)\\b"
         },
         {
           "name": "support.type.xsdl",
