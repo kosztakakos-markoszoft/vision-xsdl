@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 let globalVariableCache = new Set<string>();
 
 // Regex a változók felismeréséhez (pl. "  GyortVm.k1_uzemel:  " vagy "sgPLC01_adat_vetel1: bool")
-const variableRegex = /^[ \t]*([a-zA-Z0-9_\.]+)[ \t]*:/gm;
+const variableRegex = /^[ \t]*([a-zA-Z0-9_\.]+)[ \t]*:.*;$/gm;
 
 const isInvalidVariable = (name: string) => {
     const upperName = name.toUpperCase();
@@ -30,7 +30,7 @@ async function updateWorkspaceVariableCache() {
     if (vscode.workspace.workspaceFolders) {
         for (const folder of vscode.workspace.workspaceFolders) {
             // Kibővítettük a keresést: .xsdl, .val, .var, .sdl fájlokra
-            const pattern = new vscode.RelativePattern(folder, '**/*.{xsdl,val,var,sdl}');
+            const pattern = new vscode.RelativePattern(folder, '**/var*.{xsdl,val,var,sdl}');
             const files = await vscode.workspace.findFiles(pattern);
             
             for (const file of files) {
@@ -44,12 +44,9 @@ async function updateWorkspaceVariableCache() {
             }
         }
     }
-    console.log(`Cache frissítve. Talált PLC változók száma: ${globalVariableCache.size}`);
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('A Vision XSDL kiterjesztés aktiválódott!');
-
     // 1. Induláskor feltöltjük a gyorsítótárat (Cache)
     updateWorkspaceVariableCache();
 
@@ -82,22 +79,30 @@ export function activate(context: vscode.ExtensionContext) {
             });
 
             // Alap kulcsszavak felajánlása
-            const keywords = [
+            const keywords:string[] = [
                 'BEGIN', 'END', 'DO', 'STATIC',
                 'if', 'then', 'else', 'while', 'for', 'to', 'downto', 'repeat', 'until', 'function', 'Procedure',
-                'ushort', 'shortstring', 'bool', 'integer', 'real', 'dword', 'double', 'word',
-                'Constants', 'Shortints', 'Bytes', 'Integers', 'Words', 'Longints', 'DWords', 'DLongs', 'ScaledReals',
+            ];
+            keywords.forEach((kw:string) => {
+                completionItems.push(new vscode.CompletionItem(kw, vscode.CompletionItemKind.Keyword));
+                
+            })
+
+            const plcVarTypes:string[] = ['Constants', 'Shortints', 'Bytes', 'Integers', 'Words', 'Longints', 'DWords', 'DLongs', 'ScaledReals',
                 'S5Times', 'BCDs', 'ShortintTrends', 'ByteTrends', 'IntegerTrends', 'WordTrends', 'LongintTrends', 'DWordTrends',
                 'DLongTrends', 'ScaledRealTrends', 'BCDTrends', 'DirectShortints', 'DirectBytes', 'DirectIntegers', 'DirectWords',
                 'DirectLongints', 'DirectDWords', 'DirectDLongs', 'BCDWords', 'Reals', 'Doubles', 'RealTrends', 'DoubleTrends',
-                'Discretes', 'Morestates', 'Messages', 'WideStrings', 'LongStrings', 'PackTimes', 'LongTimes', 'IODevices'
-            ];
-            
-            keywords.forEach(kw => {
-                const isType = ['ushort', 'shortstring', 'bool', 'integer', 'real', 'dword', 'double', 'word'].includes(kw);
-                const kind = isType ? vscode.CompletionItemKind.Struct : vscode.CompletionItemKind.Keyword;
-                completionItems.push(new vscode.CompletionItem(kw, kind));
-            });
+                'Discretes', 'DiscreteTrends', 'Morestates', 'MorestateTrends', 'Messages', 'WideStrings', 'LongStrings', 'PackTimes', 'LongTimes', 'IODevices'];
+            plcVarTypes.forEach((pvType:string) => {
+                completionItems.push(new vscode.CompletionItem(pvType, vscode.CompletionItemKind.Class));
+                
+            })
+
+            const progVarTypes:string[] = ['ushort', 'shortstring', 'bool', 'integer', 'real', 'dword', 'double', 'word'];
+            progVarTypes.forEach((pvType:string) => {
+                completionItems.push(new vscode.CompletionItem(pvType, vscode.CompletionItemKind.Struct));
+                
+            })
 
             return completionItems;
         }
