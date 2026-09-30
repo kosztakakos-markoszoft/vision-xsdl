@@ -12,6 +12,7 @@
     { "include": "#special_constants" },
     { "include": "#at_references" },
     { "include": "#variable_declarations" },
+    { "include": "#constant_declarations" },
     { "include": "#numbers" },
     { "include": "#identifiers" }
   ],
@@ -31,7 +32,7 @@
       "patterns": [
         {
           "name": "constant.character.escape.xsdl",
-          "match": "\\\\."
+          "match": "\\\\[^\"]"
         }
       ]
     },
@@ -110,18 +111,7 @@
     "variable_declarations": {
       "patterns": [
         {
-          "match": "^\\s*([a-zA-Z0-9_\\]+)\\.?(.*)\\s*:.*;$",
-          "captures": {
-            "1": {
-              "name": "variable.name.declaration.xsdl"
-            },
-            "2": {
-              "name": "variable.other.declaration.xsdl"
-            }
-          }
-        },
-        {
-          "match": "^\\s*([a-zA-Z0-9_\\.]+)\\s*:.*;$",
+          "match": "^\\s*([a-zA-Z0-9_]+)\\s*:[^=]*;$",
           "captures": {
             "1": {
               "name": "variable.name.declaration.xsdl"
@@ -134,6 +124,14 @@
             "1": { "name": "keyword.control.directive.xsdl" },
             "2": { "name": "entity.name.namespace.xsdl" }
           }
+        }
+      ]
+    },
+    "constant_declarations": {
+      "patterns": [
+        {
+          "name": "constant.language.declaration.xsdl",
+          "match": "^\\s*([a-zA-Z0-9_]+)\\s*:=.*;$"
         }
       ]
     },
