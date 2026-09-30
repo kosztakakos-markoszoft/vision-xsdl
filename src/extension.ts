@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 let globalVariableCache = new Set<string>();
 
 // Regex a változók felismeréséhez (pl. "  GyortVm.k1_uzemel:  " vagy "sgPLC01_adat_vetel1: bool")
-const variableRegex = /^[ \t]*([a-zA-Z0-9_\.]+)[ \t]*:.*;$/gm;
+const variableRegex = /^[ \t]*([a-zA-Z0-9_\.]+)[ \t]*:.*$/gm;
 
 const isInvalidVariable = (name: string) => {
     const upperName = name.toUpperCase();
@@ -39,7 +39,7 @@ async function updateWorkspaceVariableCache() {
                     const content = new TextDecoder('utf-8').decode(fileData);
                     extractVariablesFromText(content, globalVariableCache);
                 } catch (error) {
-                    console.error(`Hiba a ${file.fsPath} olvasásakor:`, error);
+                    console.error(`Error ${file.fsPath} while reading:`, error);
                 }
             }
         }
