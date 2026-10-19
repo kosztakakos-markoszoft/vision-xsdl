@@ -4,7 +4,7 @@
   "description": "XSDL language support for Vision X10",
   "publisher": "kosztak",
   "icon": "icon.png",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.136.0"
   },
@@ -71,6 +71,7 @@
   },
   "dependencies": {
     "@types/vscode": "^1.136.0",
+    "chevrotain": "^13.2.0",
     "typescript": "^7.0.2"
   },
   "devDependencies": {

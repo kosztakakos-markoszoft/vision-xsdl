@@ -36,91 +36,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
-// Ide mentjük el a workspace változóit, hogy gépeléskor ne kelljen a lemezről olvasni
-let globalVariableCache = new Set();
-// Regex a változók felismeréséhez (pl. "  GyortVm.k1_uzemel:  " vagy "sgPLC01_adat_vetel1: bool")
-const variableRegex = /^[ \t]*([a-zA-Z0-9_\.]+)[ \t]*:/gm;
-const isInvalidVariable = (name) => {
-    const upperName = name.toUpperCase();
-    return ['BEGIN', 'END', 'DO', 'STATIC'].includes(upperName) ||
-        /^[A-Z]{2,3}[0-9]+$/.test(name); // Pl. LR20, TX12 kiszűrése
-};
-// Segédfüggvény: Egy szövegblokk elemzése és változók kinyerése
-function extractVariablesFromText(text, targetSet) {
-    let match;
-    while ((match = variableRegex.exec(text)) !== null) {
-        const varName = match[1].trim();
-        if (!isInvalidVariable(varName)) {
-            targetSet.add(varName);
-        }
-    }
-}
-// Munkaterület összes fájljának beolvasása a Cache-be
-async function updateWorkspaceVariableCache() {
-    globalVariableCache.clear();
-    if (vscode.workspace.workspaceFolders) {
-        for (const folder of vscode.workspace.workspaceFolders) {
-            // Kibővítettük a keresést: .xsdl, .val, .var, .sdl fájlokra
-            const pattern = new vscode.RelativePattern(folder, '**/*.{xsdl,val,var,sdl}');
-            const files = await vscode.workspace.findFiles(pattern);
-            for (const file of files) {
-                try {
-                    const fileData = await vscode.workspace.fs.readFile(file);
-                    const content = new TextDecoder('utf-8').decode(fileData);
-                    extractVariablesFromText(content, globalVariableCache);
-                }
-                catch (error) {
-                    console.error(`Hiba a ${file.fsPath} olvasásakor:`, error);
-                }
-            }
-        }
-    }
-    console.log(`Cache frissítve. Talált PLC változók száma: ${globalVariableCache.size}`);
-}
+const runner_1 = require("./parser/runner");
+// A korábbi Cache logikád itt maradhat az IntelliSense-hez (globalVariableCache, extractVariablesFromText...)
+// ... [A KORÁBBAN MEGÍRT INTELLISENSE KÓDOD HELYE] ...
 function activate(context) {
-    console.log('A Vision XSDL kiterjesztés aktiválódott!');
-    // 1. Induláskor feltöltjük a gyorsítótárat (Cache)
-    updateWorkspaceVariableCache();
-    // 2. Ha a felhasználó elment egy fájlt, frissítjük a Cache-t
-    const saveListener = vscode.workspace.onDidSaveTextDocument((doc) => {
-        if (['xsdl', 'val', 'var', 'sdl'].some(ext => doc.fileName.endsWith(`.${ext}`))) {
-            updateWorkspaceVariableCache();
+    console.log('A Vision XSDL kiterjesztés aktiválódott AST motorral!');
+    // --- Hibaellenőrzés (Diagnostics) AST Parserrel ---
+    const diagnosticCollection = vscode.languages.createDiagnosticCollection('xsdl');
+    context.subscriptions.push(diagnosticCollection);
+    function updateDiagnostics(document, collection) {
+        if (!['xsdl', 'val', 'var', 'sdl'].some(ext => document.fileName.endsWith(`.${ext}`))) {
+            return;
         }
-    });
-    context.subscriptions.push(saveListener);
-    // 3. Maga a kódkiegészítő (IntelliSense) logika
-    const provider = vscode.languages.registerCompletionItemProvider('xsdl', {
-        provideCompletionItems(document, position) {
-            const completionItems = [];
-            const localVariables = new Set();
-            // Jelenlegi fájl friss elemzése, ha esetleg épp most gépelt be egy új változót
-            extractVariablesFromText(document.getText(), localVariables);
-            // Lokális és Globális változók egyesítése
-            const allVariables = new Set([...globalVariableCache, ...localVariables]);
-            // Változók hozzáadása a felugró listához
-            allVariables.forEach(varName => {
-                const item = new vscode.CompletionItem(varName, vscode.CompletionItemKind.Variable);
-                item.detail = 'PLC Változó / Objektum (XSDL)';
-                completionItems.push(item);
-            });
-            // Alap kulcsszavak felajánlása
-            const keywords = [
-                'BEGIN', 'END', 'DO', 'STATIC', 'FI',
-                'if', 'then', 'else', 'while', 'for', 'to', 'downto', 'repeat', 'until', 'function', 'Procedure',
-                'ushort', 'shortstring', 'bool', 'integer', 'real', 'dword', 'double', 'word',
-                'Discretes', 'Reals', 'DirectWords', 'Morestates', 'Discretetrends', 'Realtrends', 'Morestatetrends'
-            ];
-            keywords.forEach(kw => {
-                const isType = ['ushort', 'shortstring', 'bool', 'integer', 'real', 'dword', 'double', 'word'].includes(kw);
-                const kind = isType ? vscode.CompletionItemKind.Struct : vscode.CompletionItemKind.Keyword;
-                completionItems.push(new vscode.CompletionItem(kw, kind));
-            });
-            return completionItems;
-        }
-    });
-    context.subscriptions.push(provider);
+        const text = document.getText();
+        // Meghívjuk a saját Parserünket!
+        const parseResult = (0, runner_1.parseXsdl)(text);
+        const diagnostics = [];
+        // 1. Lexer hibák feldolgozása (pl. ismeretlen karakter a kódban)
+        parseResult.lexErrors.forEach(err => {
+            const range = new vscode.Range(err.line - 1, err.column - 1, err.line - 1, err.column - 1 + err.length);
+            diagnostics.push(new vscode.Diagnostic(range, `Érvénytelen karakter: ${err.message}`, vscode.DiagnosticSeverity.Error));
+        });
+        // 2. Parser hibák feldolgozása (Hiányzó 'then', 'end', zárójel stb.)
+        parseResult.parseErrors.forEach(err => {
+            const token = err.token;
+            // A Chevrotain 1-től indexeli a sorokat, a VS Code 0-tól
+            const line = token.startLine ? token.startLine - 1 : 0;
+            const startCol = token.startColumn ? token.startColumn - 1 : 0;
+            const endCol = token.endColumn ? token.endColumn : startCol + 1;
+            const range = new vscode.Range(line, startCol, line, endCol);
+            diagnostics.push(new vscode.Diagnostic(range, `Szintaktikai hiba: ${err.message}`, vscode.DiagnosticSeverity.Error));
+        });
+        // 3. Típus- és Szemantikai hibák (Visitor alapján)
+        // Itt tudod felhasználni a parseResult.procedures Map-et a paraméterek ellenőrzésére!
+        // (Ezt majd a következő fázisban finomhangoljuk)
+        collection.set(document.uri, diagnostics);
+    }
+    // Fájl változások figyelése
+    if (vscode.window.activeTextEditor) {
+        updateDiagnostics(vscode.window.activeTextEditor.document, diagnosticCollection);
+    }
+    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(e => updateDiagnostics(e.document, diagnosticCollection)));
+    context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(doc => updateDiagnostics(doc, diagnosticCollection)));
+    // ... [A KORÁBBAN MEGÍRT PROVIDER (vscode.languages.registerCompletionItemProvider) HELYE] ...
 }
-function deactivate() {
-    globalVariableCache.clear();
-}
+function deactivate() { }
 //# sourceMappingURL=extension.js.map
