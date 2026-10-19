@@ -28,7 +28,7 @@ jobs:
         run: npx tsc
 
       - name: VSIX csomag előállítása
-        run: npx @vscode/vsce package --no-dependencies -o vision-xsdl.vsix
+        run: npx @vscode/vsce package -o vision-xsdl.vsix
 
       - name: VSIX feltöltése a GitHub Release-hez
         uses: softprops/action-gh-release@v2
