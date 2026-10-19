@@ -5,6 +5,7 @@ import { createToken, Lexer } from "chevrotain";
 // így a Parsernek nem kell a szóközökkel és kommentekkel foglalkoznia.
 export const WhiteSpace = createToken({ name: "WhiteSpace", pattern: /\s+/, group: Lexer.SKIPPED });
 export const Comment = createToken({ name: "Comment", pattern: /'.*/, group: Lexer.SKIPPED });
+export const Directive = createToken({ name: "Directive", pattern: /#[^\r\n]*/, group: Lexer.SKIPPED });
 
 // 2. Azonosítók (Változók és függvények nevei, pl. "GyortVm.k1_uzemel")
 export const Identifier = createToken({ name: "Identifier", pattern: /[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*/ });
@@ -56,6 +57,7 @@ export const OpDivide = createToken({ name: "OpDivide", pattern: /\// });
 
 // 5. Literálok (Számok, Szövegek, Típusreferenciák)
 export const NumberLiteral = createToken({ name: "NumberLiteral", pattern: /\b[0-9]+(?:\.[0-9]+)?\b/ });
+export const HexLiteral = createToken({ name: "HexLiteral", pattern: /\$[0-9A-Fa-f]+/i });
 export const StringLiteral = createToken({ name: "StringLiteral", pattern: /"[^"\\]*(?:\\.[^"\\]*)*"/ });
 export const AtReference = createToken({ name: "AtReference", pattern: /@[a-zA-Z0-9_]+/ });
 
@@ -64,6 +66,7 @@ export const AtReference = createToken({ name: "AtReference", pattern: /@[a-zA-Z
 export const allTokens = [
     WhiteSpace,
     Comment,
+    Directive,
     
     // 1. Kulcsszavak
     KwIf, KwThen, KwElse, KwFi, KwCase, KwOf, KwEnd, KwProcedure, KwBegin,
@@ -78,6 +81,7 @@ export const allTokens = [
     
     // 4. Literálok és változók a legvégén
     NumberLiteral,
+    HexLiteral,
     StringLiteral,
     AtReference,
     Identifier

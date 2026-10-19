@@ -40,7 +40,6 @@ const runner_1 = require("./parser/runner");
 // A korábbi Cache logikád itt maradhat az IntelliSense-hez (globalVariableCache, extractVariablesFromText...)
 // ... [A KORÁBBAN MEGÍRT INTELLISENSE KÓDOD HELYE] ...
 function activate(context) {
-    console.log('A Vision XSDL kiterjesztés aktiválódott AST motorral!');
     // --- Hibaellenőrzés (Diagnostics) AST Parserrel ---
     const diagnosticCollection = vscode.languages.createDiagnosticCollection('xsdl');
     context.subscriptions.push(diagnosticCollection);

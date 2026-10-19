@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.XsdlLexer = exports.allTokens = exports.AtReference = exports.StringLiteral = exports.NumberLiteral = exports.OpDivide = exports.OpMultiply = exports.OpMinus = exports.OpPlus = exports.OpPower = exports.OpEqual = exports.OpGreater = exports.OpLess = exports.OpGreaterOrEqual = exports.OpLessOrEqual = exports.OpNotEqual = exports.RSquare = exports.LSquare = exports.RBrace = exports.LBrace = exports.Comma = exports.Semicolon = exports.Colon = exports.DoubleColon = exports.OpMod = exports.OpDiv = exports.OpNot = exports.OpXor = exports.OpOr = exports.OpAnd = exports.KwBegin = exports.KwProcedure = exports.KwEnd = exports.KwOf = exports.KwCase = exports.KwFi = exports.KwElse = exports.KwThen = exports.KwIf = exports.Identifier = exports.Comment = exports.WhiteSpace = void 0;
+exports.XsdlLexer = exports.allTokens = exports.AtReference = exports.StringLiteral = exports.HexLiteral = exports.NumberLiteral = exports.OpDivide = exports.OpMultiply = exports.OpMinus = exports.OpPlus = exports.OpPower = exports.OpEqual = exports.OpGreater = exports.OpLess = exports.OpGreaterOrEqual = exports.OpLessOrEqual = exports.OpNotEqual = exports.RSquare = exports.LSquare = exports.RBrace = exports.LBrace = exports.Comma = exports.Semicolon = exports.Colon = exports.DoubleColon = exports.OpMod = exports.OpDiv = exports.OpNot = exports.OpXor = exports.OpOr = exports.OpAnd = exports.KwBegin = exports.KwProcedure = exports.KwEnd = exports.KwOf = exports.KwCase = exports.KwFi = exports.KwElse = exports.KwThen = exports.KwIf = exports.Identifier = exports.Directive = exports.Comment = exports.WhiteSpace = void 0;
 const chevrotain_1 = require("chevrotain");
 // 1. Üres helyek (Whitespace) és Kommentek
 // A "group: Lexer.SKIPPED" azt jelenti, hogy felismerjük őket, de el is dobjuk, 
 // így a Parsernek nem kell a szóközökkel és kommentekkel foglalkoznia.
 exports.WhiteSpace = (0, chevrotain_1.createToken)({ name: "WhiteSpace", pattern: /\s+/, group: chevrotain_1.Lexer.SKIPPED });
 exports.Comment = (0, chevrotain_1.createToken)({ name: "Comment", pattern: /'.*/, group: chevrotain_1.Lexer.SKIPPED });
+exports.Directive = (0, chevrotain_1.createToken)({ name: "Directive", pattern: /#[^\r\n]*/, group: chevrotain_1.Lexer.SKIPPED });
 // 2. Azonosítók (Változók és függvények nevei, pl. "GyortVm.k1_uzemel")
 exports.Identifier = (0, chevrotain_1.createToken)({ name: "Identifier", pattern: /[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*/ });
 // 3. Kulcsszavak (Keywords)
@@ -51,6 +52,7 @@ exports.OpMultiply = (0, chevrotain_1.createToken)({ name: "OpMultiply", pattern
 exports.OpDivide = (0, chevrotain_1.createToken)({ name: "OpDivide", pattern: /\// });
 // 5. Literálok (Számok, Szövegek, Típusreferenciák)
 exports.NumberLiteral = (0, chevrotain_1.createToken)({ name: "NumberLiteral", pattern: /\b[0-9]+(?:\.[0-9]+)?\b/ });
+exports.HexLiteral = (0, chevrotain_1.createToken)({ name: "HexLiteral", pattern: /\$[0-9A-Fa-f]+/i });
 exports.StringLiteral = (0, chevrotain_1.createToken)({ name: "StringLiteral", pattern: /"[^"\\]*(?:\\.[^"\\]*)*"/ });
 exports.AtReference = (0, chevrotain_1.createToken)({ name: "AtReference", pattern: /@[a-zA-Z0-9_]+/ });
 // 6. Tokenek regisztrálása a Lexer számára (A SORREND KRITIKUS!)
@@ -58,6 +60,7 @@ exports.AtReference = (0, chevrotain_1.createToken)({ name: "AtReference", patte
 exports.allTokens = [
     exports.WhiteSpace,
     exports.Comment,
+    exports.Directive,
     // 1. Kulcsszavak
     exports.KwIf,
     exports.KwThen,
@@ -97,6 +100,7 @@ exports.allTokens = [
     exports.OpDivide,
     // 4. Literálok és változók a legvégén
     exports.NumberLiteral,
+    exports.HexLiteral,
     exports.StringLiteral,
     exports.AtReference,
     exports.Identifier

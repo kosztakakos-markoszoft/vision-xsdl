@@ -222,6 +222,7 @@ class XsdlParser extends chevrotain_1.CstParser {
                     }
                 },
                 { ALT: () => this.CONSUME(tokens.NumberLiteral) },
+                { ALT: () => this.CONSUME(tokens.HexLiteral) },
                 { ALT: () => this.CONSUME(tokens.StringLiteral) },
                 {
                     ALT: () => {
